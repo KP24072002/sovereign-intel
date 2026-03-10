@@ -1,1 +1,22 @@
-[]
+[
+    {
+        "name": "Rahul Sharma",
+        "company": "AcmeSaaS",
+        "sector": "B2B HR Tech India",
+        "email": "rahul@acmesaas.com",
+        "competitors": [
+            "Darwinbox",
+            "Keka",
+            "greytHR"
+        ],
+        "watchTopics": [
+            "HR tech funding India",
+            "payroll compliance India"
+        ],
+        "priorities": [
+            "Enterprise expansion",
+            "Series B fundraise"
+        ],
+        "tier": "sovereign"
+    }
+]

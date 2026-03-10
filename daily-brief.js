@@ -36,7 +36,12 @@ async function research(client) {
         `India B2B SaaS startup news funding today`,
     ];
 
-    const results = await Promise.all(queries.map(q => tavilySearch(q)));
+    console.log(`Phase: Researching for ${client.name}...`);
+    const results = await Promise.all(queries.map(q => {
+        console.log(`   - Querying: ${q}`);
+        return tavilySearch(q);
+    }));
+    console.log(`   - Research complete. Context length: ${results.join('').length} chars.`);
     return results.map((r, i) => `[QUERY ${i + 1}: ${queries[i]}]\n${r}`).join('\n\n---\n\n');
 }
 
@@ -50,6 +55,9 @@ async function tavilySearch(query) {
             include_answer: true, max_results: 5
         })
     });
+    if (!res.ok) {
+        throw new Error(`Tavily API failed with status ${res.status}: ${await res.text()}`);
+    }
     const d = await res.json();
     return d.answer + '\n' + (d.results || []).map(r => `• ${r.title}: ${r.content?.slice(0, 200)}`).join('\n');
 }
@@ -60,8 +68,9 @@ async function synthesize(client, rawResearch) {
         weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
     });
 
+    console.log(`Phase: Synthesizing brief for ${client.name}...`);
     const msg = await claude.messages.create({
-        model: 'claude-opus-4-6',
+        model: 'claude-3-5-sonnet-20241022',
         max_tokens: 1500,
         system: `You are a private strategic intelligence analyst for elite founder clients.
 You write with precision — no corporate speak, no filler, maximum signal.
@@ -130,13 +139,18 @@ async function runAllBriefs() {
     for (const client of CLIENTS) {
         try {
             console.log(`Processing: ${client.name}`);
-            const research = await research(client);
-            const brief = await synthesize(client, research);
-            await deliverBrief(client, brief);
-            console.log(`✅ Done: ${client.name}`);
+            const researchData = await research(client);
+            const brief = await synthesize(client, researchData);
+            try {
+                await deliverBrief(client, brief);
+                console.log(`✅ Brief sent for: ${client.name}`);
+            } catch (deliverError) {
+                console.warn(`⚠️ Could not email brief for ${client.name}:`, deliverError.message);
+                console.log(`--- BRIEF START ---\n${brief}\n--- BRIEF END ---`);
+            }
             await new Promise(r => setTimeout(r, 3000)); // rate limit buffer
         } catch (e) {
-            console.error(`❌ Failed: ${client.name} —`, e.message);
+            console.error(`❌ Failed: ${client.name} —`, e);
         }
     }
 }
