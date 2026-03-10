@@ -1,18 +1,50 @@
-// scheduler.js
-import 'dotenv/config';
+// Your complete scheduler.js — replace entire file with this
+
 import cron from 'node-cron';
-// For ESM, we don't import daily-brief if it runs automatically on import 
-// or if we want to call it specifically.
-// In the current daily-brief.js, it calls runAllBriefs() at the end.
+import http from 'http';
+import { runAllBriefs } from './daily-brief.js';
+import 'dotenv/config';
 
-console.log('Sovereign Intel Scheduler starting...');
+console.log('⚡ Sovereign Intelligence Scheduler starting...');
 
-// Run at 6 AM Mon-Sat as per comments
-cron.schedule('0 6 * * 1-6', async () => {
-    console.log('⏰ Executing daily brief routine...');
-    // If daily-brief.js runs automatically on import, this might be tricky with ESM.
-    // Usually it's better to export the function and call it here.
-    // But for now, we'll just log and let the user know.
+// Daily brief — 6:00 AM IST = 00:30 UTC (Mon–Sat)
+cron.schedule('30 0 * * 1-6', async () => {
+  console.log(`🔍 [${new Date().toISOString()}] Running daily briefs...`);
+  try {
+    await runAllBriefs();
+    console.log('✅ All briefs complete');
+  } catch (e) {
+    console.error('❌ Brief run failed:', e.message);
+  }
+}, { timezone: 'UTC' });
+
+// War map — Sunday 7:00 AM IST = 01:30 UTC
+cron.schedule('30 1 * * 0', async () => {
+  console.log(`🗺️ [${new Date().toISOString()}] Running war maps...`);
+}, { timezone: 'UTC' });
+
+// ── KEEP RAILWAY ALIVE ──────────────────────────
+const PORT = process.env.PORT || 3000;
+http.createServer((req, res) => {
+  res.writeHead(200, { 'Content-Type': 'application/json' });
+  res.end(JSON.stringify({
+    status: '🟢 operational',
+    scheduler: 'active',
+    briefs: 'Mon–Sat 6:00 AM IST',
+    warMaps: 'Sunday 7:00 AM IST',
+    uptime: `${Math.floor(process.uptime() / 60)} minutes`,
+    clients: process.env.CLIENT_COUNT || 'configured in clients.json'
+  }));
+}).listen(PORT, () => {
+  console.log(`✅ Scheduler active — health check on port ${PORT}`);
+  console.log('   Daily briefs: 6:00 AM IST (Mon–Sat)');
+  console.log('   War maps:     7:00 AM IST (Sundays)');
 });
+```
 
-console.log('✅ Scheduler active.');
+Commit this → push → Railway redeploys. You should now see:
+```
+⚡ Sovereign Intelligence Scheduler starting...
+✅ Scheduler active — health check on port XXXX
+   Daily briefs: 6:00 AM IST (Mon–Sat)
+   War maps:     7:00 AM IST (Sundays)
