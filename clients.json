@@ -1,22 +1,26 @@
 [
-    {
-        "name": "Rahul Sharma",
-        "company": "AcmeSaaS",
-        "sector": "B2B HR Tech India",
-        "email": "rahul@acmesaas.com",
-        "competitors": [
-            "Darwinbox",
-            "Keka",
-            "greytHR"
-        ],
-        "watchTopics": [
-            "HR tech funding India",
-            "payroll compliance India"
-        ],
-        "priorities": [
-            "Enterprise expansion",
-            "Series B fundraise"
-        ],
-        "tier": "sovereign"
-    }
+  {
+    "id": "test_001",
+    "name": "Test Founder",
+    "company": "Leadsquared",
+    "sector": "B2B Sales CRM Tech India",
+    "email": "founder@leadsquared.com",
+    "whatsapp": "+919999999999",
+    "tier": "analyst",
+    "retainer": 150000,
+    "startDate": "2025-04-01",
+    "competitors": ["Zoho CRM", "Freshsales", "HubSpot India", "Salesforce India"],
+    "watchTopics": [
+      "CRM software India funding",
+      "sales automation SaaS India",
+      "enterprise software deals India"
+    ],
+    "priorities": [
+      "Enterprise market expansion",
+      "Series C fundraise",
+      "International expansion SEA"
+    ],
+    "watchPeople": [],
+    "briefDays": ["monday", "tuesday", "wednesday", "thursday", "friday"]
+  }
 ]
