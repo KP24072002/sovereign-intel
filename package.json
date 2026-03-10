@@ -2,8 +2,12 @@
   "name": "sovereign-intel",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "scheduler.js",
   "scripts": {
+    "start": "node scheduler.js",
+    "scheduler": "node scheduler.js",
+    "daily": "node daily-brief.js",
+    "dossier": "node dossier.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
